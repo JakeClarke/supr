@@ -67,3 +67,34 @@ func (r *Repo) Checkout(branch string) error {
 
 	return cmd.Run()
 }
+
+func (r *Repo) Sync() error {
+	if _, err := os.Stat(r.Name); err != nil {
+		if os.IsNotExist(err) {
+			return r.Clone()
+		}
+		return err
+	}
+
+	return r.Update()
+}
+
+func (r *Repo) Update() error {
+	cmd := exec.Command(gitExec, "fetch", "--all")
+	cmd.Dir = r.Name
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("Failed to fetch remotes: %v", err)
+	}
+
+	cmd = exec.Command(gitExec, "rebase")
+	cmd.Dir = r.Name
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("Failed to rebase on tracked remote: %v", err)
+	}
+
+	return nil
+}

@@ -40,8 +40,8 @@ func sync(cmd *cobra.Command, args []string) {
 	}
 
 	for i := range repos {
-		log.Printf("Cloning: %s from %s. Default branch: %s\n", repos[i].Name, repos[i].Uri, repos[i].DefaultBranch)
-		if err = repos[i].Clone(); err != nil {
+		log.Printf("Syncing: %s from %s. Default branch: %s\n", repos[i].Name, repos[i].Uri, repos[i].DefaultBranch)
+		if err = repos[i].Sync(); err != nil {
 			log.Fatal(err)
 		}
 	}
