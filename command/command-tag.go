@@ -33,9 +33,13 @@ func tag(cmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 
+	if len(args) > 1 {
+		repos = filterDef(repos, args[1:len(args)-1])
+	}
+
 	for i := range repos {
 		log.Printf("Tagging: %s\n", repos[i].Name)
-		if err = repos[i].Tag(args[0], message); err != nil {
+		if err = repos[i].Tag(args[len(args)-1], message); err != nil {
 			log.Fatal(err)
 		}
 	}

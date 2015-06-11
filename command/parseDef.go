@@ -8,9 +8,9 @@ import (
 )
 
 // Filters repos by names provided.
-// If nil names are provided then repos is returned.
+// If 0 names are provided then repos is returned.
 func filterDef(repos []*git.Repo, names []string) (res []*git.Repo) {
-	if name == nil {
+	if len(names) == 0 {
 		res = repos
 		return
 	}
