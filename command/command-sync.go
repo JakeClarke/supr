@@ -18,16 +18,19 @@ var (
 		Short: "download project def and checkout latest on repos",
 		Run:   sync,
 	}
+
+	uri *string
 )
 
 func init() {
+	uri = syncCmd.Flags().String("uri", "", "URI to copy from. Uses local copy if not provided.")
 	rootCmd.AddCommand(syncCmd)
 }
 
 func sync(cmd *cobra.Command, args []string) {
-	if len(args) > 0 {
+	if len(*uri) > 0 {
 		log.Print("Getting repo defs...")
-		if err := downloadDef(args[0]); err != nil {
+		if err := downloadDef(*uri); err != nil {
 			log.Fatal(err)
 		}
 		log.Print("done!\n")
@@ -37,6 +40,14 @@ func sync(cmd *cobra.Command, args []string) {
 	repos, err := parseDef()
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if len(args) > 0 {
+		repos = filterDef(repos, args)
+	}
+
+	if len(repos) == 0 {
+		log.Fatal("Filted all repos. Nothing to do.")
 	}
 
 	for i := range repos {
