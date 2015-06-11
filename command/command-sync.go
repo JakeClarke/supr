@@ -1,24 +1,26 @@
 package command
 
 import (
-	"encoding/json"
 	"errors"
-	"github.com/JakeClarke/supr/git"
-	"github.com/spf13/cobra"
 	"io"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/spf13/cobra"
 )
 
 const reposDefs = ".supr"
 
-func init() {
-	syncCmd := &cobra.Command{
+var (
+	syncCmd = &cobra.Command{
 		Use:   "sync",
 		Short: "download project def and checkout latest on repos",
 		Run:   sync,
 	}
+)
+
+func init() {
 	rootCmd.AddCommand(syncCmd)
 }
 
@@ -68,18 +70,4 @@ func downloadDef(uri string) error {
 	}
 
 	return nil
-}
-
-func parseDef() ([]git.Repo, error) {
-	r, err := os.Open(reposDefs)
-	if err != nil {
-		return nil, err
-	}
-
-	defer r.Close()
-	decoder := json.NewDecoder(r)
-
-	var repos []git.Repo
-	err = decoder.Decode(&repos)
-	return repos, err
 }
