@@ -8,23 +8,22 @@ import (
 
 var (
 	tagCmd = &cobra.Command{
-		Use:   "tag",
+		Use:   "tag [name] [repos]",
 		Short: "tag the currently checked out branch on the child repos",
 		Run:   tag,
 	}
+
+	message *string
 )
 
 func init() {
+	message = tagCmd.Flags().String("msg", "", "Message that you want to be attached to the tag. If not set, tag name is used")
 	rootCmd.AddCommand(tagCmd)
 }
 
 func tag(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
 		log.Fatal("Supply a tag name")
-	}
-	var message string
-	if len(args) > 1 {
-		message = args[1]
 	}
 
 	log.Println("Parsing repo defs...")
@@ -43,7 +42,7 @@ func tag(cmd *cobra.Command, args []string) {
 
 	for i := range repos {
 		log.Printf("Tagging: %s\n", repos[i].Name)
-		if err = repos[i].Tag(args[0], message); err != nil {
+		if err = repos[i].Tag(args[0], *message); err != nil {
 			log.Fatal(err)
 		}
 	}
