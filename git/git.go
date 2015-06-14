@@ -36,6 +36,11 @@ func (r *Repo) Clone() error {
 func (r *Repo) Branch(branch string) error {
 	cmd := exec.Command(gitExec, "checkout", "-b", branch)
 	cmd.Dir = r.Name
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("Failed to branch %s to %s. (%v)", r.Name, branch, err)
+	}
 
 	return cmd.Run()
 }

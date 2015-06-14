@@ -14,6 +14,10 @@ var (
 	}
 )
 
+func init() {
+	rootCmd.AddCommand(branchgCmd)
+}
+
 func branch(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
 		log.Fatal("Supply a branch name")
