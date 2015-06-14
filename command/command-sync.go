@@ -23,7 +23,7 @@ var (
 )
 
 func init() {
-	uri = syncCmd.Flags().String("uri", "", "URI to copy from. Uses local copy if not provided.")
+	uri = syncCmd.Flags().StringP("uri", "u", "", "URI to copy from. Uses local copy if not provided.")
 	rootCmd.AddCommand(syncCmd)
 }
 
